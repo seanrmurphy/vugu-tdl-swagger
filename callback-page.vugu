@@ -1,0 +1,16 @@
+<div>
+
+        <div class="mt-5">
+            <h1>Callback Page</h1>
+
+        </div>
+
+</div>
+
+<script type="application/x-go">
+
+type CallbackPage struct {
+}
+
+
+</script>

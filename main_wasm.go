@@ -30,7 +30,8 @@ func main() {
 	}
 	defer renderer.Release()
 
-	rootBuilder := &Root{}
+	rootBuilder := vuguSetup(buildEnv, renderer.EventEnv())
+	//rootBuilder := &Root{}
 
 	for ok := true; ok; ok = renderer.EventWait() {
 
