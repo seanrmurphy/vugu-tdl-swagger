@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -35,16 +36,24 @@ type TokenParams struct {
 	RedirectURI  string `url:"redirect_uri,omitempty"`
 }
 
+type ResponseParams struct {
+	AccessToken  string `json:"access_token,omitempty"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+	ExpiresIn    int    `json:"expires_in,omitempt"`
+	TokenType    string `json:"token_type,omitempty"`
+}
+
 func (c *CallbackPage) getTokens(v, code string) {
+
+	clientName := "todo-api-client"
+	clientID := "6vqii43vld9jg0odddtom70gse"
 
 	u := url.URL{
 		Scheme: "https",
-		Host:   "initialtest.auth.eu-west-1.amazoncognito.com",
+		Host:   clientName + ".auth.eu-west-1.amazoncognito.com",
 		Path:   "oauth2/token",
-		Opaque: "//initialtest.auth.eu-west-1.amazoncognito.com/oauth2/token",
+		Opaque: "//" + clientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
 	}
-
-	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
 
 	t := TokenParams{
 		GrantType:    "authorization_code",
@@ -57,16 +66,16 @@ func (c *CallbackPage) getTokens(v, code string) {
 	val, _ := query.Values(t)
 	u.RawQuery = val.Encode()
 
-	//req, _ := http.NewRequest("POST", u.String(), strings.NewReader(u.RawQuery))
 	req, _ := http.NewRequest("POST", u.String(), nil)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	//req.Header.Add("Authorization", "Basic "+clientID)
 
 	res, _ := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	fmt.Println(res)
-	fmt.Println(string(body))
+	authResponse := ResponseParams{}
+	json.Unmarshal(body, authResponse)
+	fmt.Printf("Access Token: %v", authResponse.AccessToken)
+
 }
