@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/vugu/vugu"
 )
 
@@ -29,7 +30,7 @@ func (c *ToDoList) BeforeBuild() {
 }
 
 func (c *ToDoList) getTodoId(s interface{}) (o, id string) {
-	slice := strings.Split(s.(string), "-")
+	slice := strings.SplitN(s.(string), "-", 2)
 	o = slice[0]
 	id = slice[1]
 	return
@@ -71,4 +72,19 @@ func (c *ToDoList) Delete(e vugu.DOMEvent) {
 
 	// remove from map
 	delete(c.Todos, id)
+}
+
+func (c *ToDoList) AddTodo(t Todo) {
+	c.Todos[t.Id] = t
+	c.Index = append(c.Index, t.Id)
+}
+
+func (c *ToDoList) Keypress(e vugu.DOMEvent) {
+	keyCode := e.PropFloat64("keyCode")
+	// when enter is pressed...
+	if keyCode == 13 {
+		todoString := e.PropString("target", "value")
+		t := Todo{Id: uuid.New().String(), Title: todoString, Completed: false}
+		c.AddTodo(t)
+	}
 }
