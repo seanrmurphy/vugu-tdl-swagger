@@ -32,58 +32,46 @@ func createClient() *client.SimpleTodo {
 	return c
 }
 
-//func (c *ToDoList) updateItem(i *model.Item) {
-//c := createClient()
+func (c *ToDoList) updateItem(t *models.Todo) {
+	backend := createClient()
 
-//t := models.Todo{
-//Completed:    i.BackEndModel.Completed,
-//ID:           i.BackEndModel.ID,
-//Title:        i.BackEndModel.Title,
-//CreationDate: strfmt.DateTime(time.Now()),
-//}
-//params := developers.NewUpdateTodoParams()
-//params.Todo = &t
-//params.Todoid = i.BackEndModel.ID.String()
-//ctx := context.TODO()
+	params := developers.NewUpdateTodoParams()
+	params.Todo = t
+	params.Todoid = t.ID.String()
+	ctx := context.TODO()
 
-//if _, err := c.Developers.UpdateTodo(ctx, params); err != nil {
-//log.Printf("Error updating item on backend - error %v\n", err)
-//return
-//}
-//}
+	if _, err := backend.Developers.UpdateTodo(ctx, params); err != nil {
+		log.Printf("Error updating item on backend - error %v\n", err)
+		return
+	}
+}
 
-//func (c *ToDoList) postItemToBackend(i model.Item) {
-//c := createClient()
+func (c *ToDoList) postItemToBackend(t models.Todo) {
+	backend := createClient()
 
-//t := models.Todo{
-//Completed:    i.BackEndModel.Completed,
-//ID:           i.BackEndModel.ID,
-//Title:        i.BackEndModel.Title,
-//CreationDate: strfmt.DateTime(time.Now()),
-//}
-//params := developers.NewAddTodoParams()
-//params.Todo = &t
-//ctx := context.TODO()
+	params := developers.NewAddTodoParams()
+	params.Todo = &t
+	ctx := context.TODO()
 
-//if _, err := c.Developers.AddTodo(ctx, params); err != nil {
-//log.Printf("Error pusting new item on backend - error %v\n", err)
-//return
-//}
-//}
+	if _, err := backend.Developers.AddTodo(ctx, params); err != nil {
+		log.Printf("Error pusting new item on backend - error %v\n", err)
+		return
+	}
+}
 
-//func (c *ToDoList) destroyItemOnBackend(i *model.Item) {
-//c := createClient()
+func (c *ToDoList) destroyItemOnBackend(t *models.Todo) {
+	backend := createClient()
 
-//params := developers.NewDeleteTodoParams()
-//params.Todoid = i.BackEndModel.ID.String()
+	params := developers.NewDeleteTodoParams()
+	params.Todoid = t.ID.String()
 
-//ctx := context.TODO()
+	ctx := context.TODO()
 
-//if _, err := c.Developers.DeleteTodo(ctx, params); err != nil {
-//log.Printf("Error deleting item on backend - error %v\n", err)
-//return
-//}
-//}
+	if _, err := backend.Developers.DeleteTodo(ctx, params); err != nil {
+		log.Printf("Error deleting item on backend - error %v\n", err)
+		return
+	}
+}
 
 func (c *ToDoList) getTodosFromBackend() []*models.Todo {
 	url, _ := url.Parse(restEndpoint)
@@ -116,14 +104,6 @@ func (c *ToDoList) BeforeBuild() {
 			c.Todos[idString] = *v
 			c.Index = append(c.Index, idString)
 		}
-		//c.Todos = map[string]Todo{
-		//"1": Todo{Id: "1", Title: "Todo1", Completed: true},
-		//"2": Todo{Id: "2", Title: "Todo2", Completed: false},
-		//"3": Todo{Id: "3", Title: "Todo3", Completed: true},
-		//"4": Todo{Id: "4", Title: "Todo4", Completed: false},
-		//"5": Todo{Id: "5", Title: "Todo5", Completed: true},
-		//}
-		//c.Index = []string{"1", "2", "3", "4", "5"}
 	}
 }
 
@@ -138,7 +118,9 @@ func (c *ToDoList) Done(e vugu.DOMEvent) {
 	_, id := c.getTodoId(e.Prop("target", "id"))
 	t := c.Todos[id]
 	t.Completed = !t.Completed
+
 	c.Todos[id] = t
+	go c.updateItem(&t)
 }
 
 func (c *ToDoList) Delete(e vugu.DOMEvent) {
@@ -169,12 +151,15 @@ func (c *ToDoList) Delete(e vugu.DOMEvent) {
 	}
 
 	// remove from map
+	t := c.Todos[id]
 	delete(c.Todos, id)
+	go c.destroyItemOnBackend(&t)
 }
 
 func (c *ToDoList) AddTodo(t models.Todo) {
 	c.Todos[t.ID.String()] = t
 	c.Index = append(c.Index, t.ID.String())
+	go c.postItemToBackend(t)
 }
 
 func (c *ToDoList) Keypress(e vugu.DOMEvent) {
