@@ -18,9 +18,10 @@
 </div>
 
 <script type="application/x-go">
+import "github.com/seanrmurphy/go-vecty-swagger/models"
 
 type ToDoList struct {
-	Todos map[string]Todo
+	Todos map[string]models.Todo
 	Index []string
 }
 
