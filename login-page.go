@@ -45,11 +45,14 @@ func (c *LoginPage) BeforeBuild() {
 }
 
 func (c *LoginPage) createCognitoURI(p CognitoParameters) (u url.URL) {
+
+	clientName := "todo-api-client"
+
 	u = url.URL{
 		Scheme: "https",
-		Host:   "initialtest.auth.eu-west-1.amazoncognito.com",
+		Host:   clientName + ".auth.eu-west-1.amazoncognito.com",
 		Path:   "oauth2/authorize",
-		Opaque: "//initialtest.auth.eu-west-1.amazoncognito.com/oauth2/authorize",
+		Opaque: "//" + clientName + ".auth.eu-west-1.amazoncognito.com/oauth2/authorize",
 	}
 	v, _ := query.Values(p)
 	u.RawQuery = v.Encode()
@@ -70,7 +73,7 @@ func (c *LoginPage) GotoLogin() {
 	challenge := c.codeVerifier.CodeChallengeS256()
 	challengeMethod := "S256"
 
-	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
+	clientID := "6vqii43vld9jg0odddtom70gse"
 
 	p := CognitoParameters{
 		ResponseType:        "code",

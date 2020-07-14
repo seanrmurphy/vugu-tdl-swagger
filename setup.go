@@ -28,20 +28,20 @@ func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
 	// YOU CAN ALSO ADD ROUTES THAT MATCH ANYTHING WITH THE SPECIFIED PREFIX.
 	router.MustAddRouteExact("/",
 		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-			root.Body = &LandingPage{} // A COMPONENT WITH PAGE CONTENTS
+			root.Body = &ToDoList{} // A COMPONENT WITH PAGE CONTENTS
 		}))
-	router.MustAddRouteExact("/login",
-		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-			root.Body = &LoginPage{} // A COMPONENT WITH PAGE CONTENTS
-		}))
-	router.MustAddRoute("/callback",
-		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-			root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
-		}))
-	router.SetNotFound(vgrouter.RouteHandlerFunc(
-		func(rm *vgrouter.RouteMatch) {
-			root.Body = &Pagenotfound{} // A PAGE FOR THE NOT-FOUND CASE
-		}))
+	//router.MustAddRouteExact("/login",
+	//vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
+	//root.Body = &LoginPage{} // A COMPONENT WITH PAGE CONTENTS
+	//}))
+	//router.MustAddRoute("/callback",
+	//vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
+	//root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
+	//}))
+	//router.SetNotFound(vgrouter.RouteHandlerFunc(
+	//func(rm *vgrouter.RouteMatch) {
+	//root.Body = &Pagenotfound{} // A PAGE FOR THE NOT-FOUND CASE
+	//}))
 
 	// TELL THE ROUTER TO LISTEN FOR THE BROWSER CHANGING URLS
 	err := router.ListenForPopState()
