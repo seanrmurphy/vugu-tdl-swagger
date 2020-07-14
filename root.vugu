@@ -1,11 +1,21 @@
-<div>
+<html>
 
-    <button @click='c.GotoHome()'>Home</button>
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+</head>
 
-    <!-- RENDER THE BODY -->
-    <vg-comp expr="c.Body"/>
+<body>
 
-</div>
+	<div>
+		<button @click='c.GotoHome()'>Home</button>
+		<vg-comp expr="c.Body"/>
+	</div>
+
+</body>
+
+</html>
+
 
 <script type="application/x-go">
 
