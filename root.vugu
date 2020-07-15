@@ -6,11 +6,22 @@
 </head>
 
 <body>
+        <div>
+                <div class="navbar">
+                        <div class="navbar-end">
+                                <a vg-if='!LoginData.LoggedIn' class="button is-primary" @click='c.Login()'>
+                                        Log In
+                                </a>
+                                <a vg-if='LoginData.LoggedIn' class="button is-primary" @click='c.Logout()'>
+                                        Log Out
+                                </a>
+                        </div>
+                </div>
 
-	<div>
-		<button @click='c.GotoHome()'>Home</button>
-		<vg-comp expr="c.Body"/>
-	</div>
+                <div>
+                        <vg-comp expr="c.Body"/>
+                </div>
+        </div>
 
 </body>
 
@@ -19,17 +30,15 @@
 
 <script type="application/x-go">
 
-// import "time"
 import (
 
 	"github.com/vugu/vgrouter"
 	"github.com/vugu/vugu"
+	pkce "github.com/nirasan/go-oauth-pkce-code-verifier"
 	// "net/url"
 )
 
 type Root struct {
-	LoginData
-
 	// ANYTHING THAT MUST NAVIGATE NEED ONLY EMBED THIS
 	vgrouter.NavigatorRef
 

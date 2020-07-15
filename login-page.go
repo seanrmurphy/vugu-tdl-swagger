@@ -10,30 +10,17 @@ import (
 	pkce "github.com/nirasan/go-oauth-pkce-code-verifier"
 )
 
-type CognitoParameters struct {
-	ResponseType        string `url:"response_type,omitempty"`
-	ClientID            string `url:"client_id,omitempty"`
-	RedirectURI         string `url:"redirect_uri,omitempty"`
-	State               string `url:"state,omitempty"`
-	IdentityProvider    string `url:"identity_provider,omitempty"`
-	IDPProvider         string `url:"idp_provider,omitempty"`
-	Scope               string `url:"scope,omitempty"`
-	CodeChallengeMethod string `url:"code_challenge_method,omitempty"`
-	CodeChallenge       string `url:"code_challenge,omitempty"`
-}
-
 func (c *LoginPage) BeforeBuild() {
-
 	cv := sessionStorageGet("codeVerifier")
 
 	log.Printf("cv = %v, type = %v", cv, cv.Type())
 	if cv.Type() == js.TypeNull {
 		v, _ := pkce.CreateCodeVerifier()
-		c.codeVerifier = v
+		LoginData.CodeVerifier = v
 
-		log.Printf("Creating new code verifier for login = %v", c.codeVerifier.String())
+		log.Printf("Creating new code verifier for login = %v", LoginData.CodeVerifier.String())
 
-		sessionStorageSet("codeVerifier", c.codeVerifier.String())
+		sessionStorageSet("codeVerifier", LoginData.CodeVerifier.String())
 
 		cv := sessionStorageGet("codeVerifier")
 		log.Printf("cv= %v", cv)
@@ -46,7 +33,7 @@ func (c *LoginPage) BeforeBuild() {
 
 func (c *LoginPage) createCognitoURI(p CognitoParameters) (u url.URL) {
 
-	clientName := "todo-api-client"
+	clientName := "initial-test"
 
 	u = url.URL{
 		Scheme: "https",
@@ -73,7 +60,7 @@ func (c *LoginPage) GotoLogin() {
 	challenge := c.codeVerifier.CodeChallengeS256()
 	challengeMethod := "S256"
 
-	clientID := "6vqii43vld9jg0odddtom70gse"
+	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
 
 	p := CognitoParameters{
 		ResponseType:        "code",
@@ -92,9 +79,6 @@ func (c *LoginPage) GotoLogin() {
 	log.Printf("Redirecting to...%v", q.String())
 	window := js.Global().Get("window")
 	log.Printf("window = %v", window)
-	//params := [2]string{"https://www.google.com", "_self"}
-	//params = append(params, "https://www.google.com", "_self")
+
 	window.Call("open", q.String(), "_self")
-	//window.Call("open", q.String())
-	//dispatcher.Dispatch(&actions.Login{})
 }

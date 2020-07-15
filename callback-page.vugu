@@ -1,16 +1,17 @@
-<div>
-
-        <div class="mt-5">
-            <h1>Callback Page</h1>
-
-        </div>
-
+<div class="container" class="callback">
+  <a class="button is-primary" @click='c.Navigate("/", nil)'>Go Home</a>
 </div>
 
+<style>
+.callback {
+	text-align: center;
+}
+
+</style>
 <script type="application/x-go">
 
 type CallbackPage struct {
+	vgrouter.NavigatorRef
 }
-
 
 </script>

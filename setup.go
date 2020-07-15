@@ -7,6 +7,8 @@ import (
 	"github.com/vugu/vugu"
 )
 
+var LoginData LoginDataType
+
 // OVERALL APPLICATION WIRING IN vuguSetup
 func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
 
@@ -34,10 +36,10 @@ func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
 	//vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
 	//root.Body = &LoginPage{} // A COMPONENT WITH PAGE CONTENTS
 	//}))
-	//router.MustAddRoute("/callback",
-	//vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-	//root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
-	//}))
+	router.MustAddRoute("/callback",
+		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
+			root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
+		}))
 	//router.SetNotFound(vgrouter.RouteHandlerFunc(
 	//func(rm *vgrouter.RouteMatch) {
 	//root.Body = &Pagenotfound{} // A PAGE FOR THE NOT-FOUND CASE

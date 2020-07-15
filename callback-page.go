@@ -18,35 +18,24 @@ func (c *CallbackPage) BeforeBuild() {
 	log.Printf("url = %v", url)
 
 	for k, v := range url.Query() {
-
 		log.Printf("param = %v, val = %v", k, v)
 	}
 
 	codeVerifier := sessionStorageGet("codeVerifier")
 	log.Printf("code verifier = %v", codeVerifier.String())
 
-	c.getTokens(codeVerifier.String(), url.Query().Get("code"))
+	r := c.getTokens(codeVerifier.String(), url.Query().Get("code"))
+	LoginData.ResponseParams = r
+	LoginData.LoggedIn = true
+
+	// go to main landing page...
+	//c.Navigate("/", nil)
 }
 
-type TokenParams struct {
-	GrantType    string `url:"grant_type,omitempty"`
-	ClientID     string `url:"client_id,omitempty"`
-	CodeVerifier string `url:"code_verifier,omitempty"`
-	Code         string `url:"code,omitempty"`
-	RedirectURI  string `url:"redirect_uri,omitempty"`
-}
+func (c *CallbackPage) getTokens(v, code string) (r ResponseParams) {
 
-type ResponseParams struct {
-	AccessToken  string `json:"access_token,omitempty"`
-	RefreshToken string `json:"refresh_token,omitempty"`
-	ExpiresIn    int    `json:"expires_in,omitempt"`
-	TokenType    string `json:"token_type,omitempty"`
-}
-
-func (c *CallbackPage) getTokens(v, code string) {
-
-	clientName := "todo-api-client"
-	clientID := "6vqii43vld9jg0odddtom70gse"
+	clientName := "initialtest"
+	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
 
 	u := url.URL{
 		Scheme: "https",
@@ -74,8 +63,10 @@ func (c *CallbackPage) getTokens(v, code string) {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	authResponse := ResponseParams{}
-	json.Unmarshal(body, authResponse)
-	fmt.Printf("Access Token: %v", authResponse.AccessToken)
+	fmt.Printf("body = %v", string(body))
 
+	r = ResponseParams{}
+	json.Unmarshal(body, &r)
+	fmt.Printf("Access Token: %v", r.AccessToken)
+	return
 }
