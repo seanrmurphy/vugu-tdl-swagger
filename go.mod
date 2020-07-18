@@ -4,11 +4,11 @@ go 1.14
 
 replace github.com/vugu/vgrouter => ../../vugu/vgrouter
 
-replace github.com/seanrmurphy/go-vecty-swagger/models => ../../seanrmurphy/go-vecty-swagger/models
+replace github.com/seanrmurphy/go-vecty-swagger => ../../seanrmurphy/go-vecty-swagger
 
 require (
 	github.com/fatih/structs v1.1.0
-	github.com/go-openapi/runtime v0.19.19 // indirect
+	github.com/go-openapi/runtime v0.19.19
 	github.com/go-openapi/strfmt v0.19.5
 	github.com/google/go-querystring v1.0.0
 	github.com/google/uuid v1.1.1

@@ -1,19 +1,25 @@
 
 <div class="to-do-list">
         <div class="container">
-            <h1>To Do List</h1>
+                <div vg-if='AuthenticationData.LoginData.LoggedIn'>
+                        <h1>To Do List</h1>
 
-			<div class="to-do-list-new-todo">
-				<label>New Todo:</label>
-				<input type="text" id="new-todo" @keypress='c.Keypress(event)'>
-			</div>
+                        <div class="to-do-list-new-todo">
+                                <label>New Todo:</label>
+                                <input type="text" id="new-todo" @keypress='c.Keypress(event)'>
+                        </div>
 
-			<div class="to-do-list-single-todo" vg-for='c.Index'>
-				<label vg-if='!c.Todos[value].Completed' vg-content='c.Todos[value].Title'></label>
-				<label vg-if='c.Todos[value].Completed' vg-content='c.Todos[value].Title' class="to-do-list-item-done"></label>
-				<i class="to-do-list-check-box" class="far fa-check-square" :id='"done-"+value' @click='c.Done(event)'></i>
-				<i class="to-do-list-delete" class="fas fa-trash-alt" :id='"delete-"+value' @click='c.Delete(event)'></i>
-			</div>
+                        <div class="to-do-list-single-todo" vg-for='c.Index'>
+                                <label vg-if='!c.Todos[value].Completed' vg-content='c.Todos[value].Title'></label>
+                                <label vg-if='c.Todos[value].Completed' vg-content='c.Todos[value].Title' class="to-do-list-item-done"></label>
+                                <i class="to-do-list-check-box" class="far fa-check-square" :id='"done-"+value' @click='c.Done(event)'></i>
+                                <i class="to-do-list-delete" class="fas fa-trash-alt" :id='"delete-"+value' @click='c.Delete(event)'></i>
+                        </div>
+                </div>
+
+                <div vg-if='!AuthenticationData.LoginData.LoggedIn'>
+                        <p>Please Log In to access the todo list.</p>
+                </div>
 
         </div>
 </div>

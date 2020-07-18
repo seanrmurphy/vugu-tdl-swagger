@@ -1,46 +1,38 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/url"
 	"syscall/js"
 
 	"github.com/google/go-querystring/query"
-	pkce "github.com/nirasan/go-oauth-pkce-code-verifier"
 )
 
 func (c *Root) BeforeBuild() {
 
-	cv := sessionStorageGet("codeVerifier")
+	url, _ := readBrowserURL()
+	code := url.Query().Get("code")
+	if code != "" && AuthenticationData.LoginData.LoggedIn == false {
+		codeVerifier := sessionStorageGet("codeVerifier")
+		log.Printf("code verifier = %v", codeVerifier.String())
 
-	log.Printf("cv = %v, type = %v", cv, cv.Type())
-	if cv.Type() == js.TypeNull {
-		v, _ := pkce.CreateCodeVerifier()
-		LoginData.CodeVerifier = v
-
-		log.Printf("Creating new code verifier for login = %v", LoginData.CodeVerifier.String())
-
-		sessionStorageSet("codeVerifier", LoginData.CodeVerifier.String())
-
-		cv := sessionStorageGet("codeVerifier")
-		log.Printf("cv= %v", cv)
-	} else {
-		LoginData.CodeVerifier = &pkce.CodeVerifier{
-			Value: cv.String(),
-		}
-		log.Printf("LoginData.LoggedIn = %v\n", LoginData.LoggedIn)
+		r := c.getTokens(codeVerifier.String(), url.Query().Get("code"))
+		AuthenticationData.LoginData.ResponseParams = r
+		AuthenticationData.LoginData.LoggedIn = true
 	}
 }
 
 func (c *Root) createCognitoURI(p CognitoParameters) (u url.URL) {
 
-	clientName := "initialtest"
-
 	u = url.URL{
 		Scheme: "https",
-		Host:   clientName + ".auth.eu-west-1.amazoncognito.com",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
 		Path:   "oauth2/authorize",
-		Opaque: "//" + clientName + ".auth.eu-west-1.amazoncognito.com/oauth2/authorize",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/authorize",
 	}
 	v, _ := query.Values(p)
 	u.RawQuery = v.Encode()
@@ -53,25 +45,14 @@ func (c *Root) Logout() {
 }
 
 func (c *Root) Login() {
-	log.Printf("About to redirect to login page...")
 
-	//v, _ := pkce.CreateCodeVerifier()
-	//codeVerifier := v.String()
-
-	//sessionStorageSet("codeVerifier", codeVerifier)
-
-	//log.Printf("Code verifiers = %v", codeVerifier)
-
-	log.Printf("About to create challenge...")
-	challenge := LoginData.CodeVerifier.CodeChallengeS256()
+	challenge := AuthenticationData.LoginData.CodeVerifier.CodeChallengeS256()
 	challengeMethod := "S256"
-
-	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
 
 	p := CognitoParameters{
 		ResponseType:        "code",
-		ClientID:            clientID,
-		RedirectURI:         "http://localhost:8844/callback",
+		ClientID:            AuthenticationData.ClientID,
+		RedirectURI:         AuthenticationData.RedirectURI,
 		State:               "initial-state",
 		IdentityProvider:    "COGNITO",
 		IDPProvider:         "",
@@ -82,9 +63,40 @@ func (c *Root) Login() {
 
 	q := c.createCognitoURI(p)
 
-	log.Printf("Redirecting to...%v", q.String())
 	window := js.Global().Get("window")
-	log.Printf("window = %v", window)
-
 	window.Call("open", q.String(), "_self")
+}
+
+func (c *Root) getTokens(v, code string) (r ResponseParams) {
+
+	u := url.URL{
+		Scheme: "https",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
+		Path:   "oauth2/token",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
+	}
+
+	t := TokenParams{
+		GrantType:    "authorization_code",
+		ClientID:     AuthenticationData.ClientID,
+		CodeVerifier: v,
+		Code:         code,
+		RedirectURI:  AuthenticationData.RedirectURI,
+	}
+
+	val, _ := query.Values(t)
+	u.RawQuery = val.Encode()
+
+	req, _ := http.NewRequest("POST", u.String(), nil)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	r = ResponseParams{}
+	json.Unmarshal(body, &r)
+	fmt.Printf("Access Token: %v", r.AccessToken)
+	return
 }

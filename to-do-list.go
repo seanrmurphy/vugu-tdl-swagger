@@ -15,21 +15,15 @@ import (
 	"github.com/seanrmurphy/go-vecty-swagger/models"
 )
 
-type Todo struct {
-	Id        string
-	Title     string
-	Completed bool
-}
+func createClient() *client.SimpleTodoAPISecure {
+	url, _ := url.Parse(AuthenticationData.RestEndpoint)
+	authenticator := BearerToken(AuthenticationData.LoginData.ResponseParams.AccessToken)
 
-var restEndpoint = "https://glm3dpf2yi.execute-api.eu-west-1.amazonaws.com/prod"
-
-func createClient() *client.SimpleTodo {
-	url, _ := url.Parse(restEndpoint)
 	conf := client.Config{
-		URL: url,
+		URL:      url,
+		AuthInfo: authenticator,
 	}
-	c := client.New(conf)
-	return c
+	return client.New(conf)
 }
 
 func (c *ToDoList) updateItem(t *models.Todo) {
@@ -73,12 +67,9 @@ func (c *ToDoList) destroyItemOnBackend(t *models.Todo) {
 	}
 }
 
-func (c *ToDoList) getTodosFromBackend() []*models.Todo {
-	url, _ := url.Parse(restEndpoint)
-	conf := client.Config{
-		URL: url,
-	}
-	backend := client.New(conf)
+func (c *ToDoList) getTodosFromBackend() ([]*models.Todo, error) {
+
+	backend := createClient()
 
 	p := developers.NewGetAllTodosParams()
 	ctx := context.TODO()
@@ -86,23 +77,30 @@ func (c *ToDoList) getTodosFromBackend() []*models.Todo {
 
 	if err != nil {
 		log.Printf("Error obtaining items from backend - error %v\n", err)
+		return nil, err
 	}
 
-	return todos.Payload
+	return todos.Payload, nil
 }
 
 func (c *ToDoList) BeforeBuild() {
 	// get the latest data from the backend...could be expensive to keep calling this
-	if len(c.Todos) == 0 {
-		log.Printf("Initializing todos...")
-		todos := c.getTodosFromBackend()
+	if AuthenticationData.LoginData.LoggedIn {
+		// this does not handle the case well in which the length of the todolist
+		// on the server is 0
+		if len(c.Todos) == 0 {
+			log.Printf("Initializing todos...")
+			todos, err := c.getTodosFromBackend()
 
-		c.Todos = make(map[string]models.Todo)
-		c.Index = []string{}
-		for _, v := range todos {
-			idString := v.ID.String()
-			c.Todos[idString] = *v
-			c.Index = append(c.Index, idString)
+			if err == nil {
+				c.Todos = make(map[string]models.Todo)
+				c.Index = []string{}
+				for _, v := range todos {
+					idString := v.ID.String()
+					c.Todos[idString] = *v
+					c.Index = append(c.Index, idString)
+				}
+			}
 		}
 	}
 }

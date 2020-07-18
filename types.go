@@ -29,6 +29,14 @@ type CognitoParameters struct {
 	CodeChallenge       string `url:"code_challenge,omitempty"`
 }
 
+type AuthenticationDataType struct {
+	ClientID     string
+	ClientName   string
+	LoginData    LoginDataType
+	RestEndpoint string
+	RedirectURI  string
+}
+
 type LoginDataType struct {
 	LoggedIn       bool
 	CodeVerifier   *pkce.CodeVerifier
