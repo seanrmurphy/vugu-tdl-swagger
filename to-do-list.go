@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 	"github.com/vugu/vugu"
@@ -15,12 +14,6 @@ import (
 	"github.com/seanrmurphy/go-vecty-swagger/client/developers"
 	"github.com/seanrmurphy/go-vecty-swagger/models"
 )
-
-type Todo struct {
-	Id        string
-	Title     string
-	Completed bool
-}
 
 func createClient() *client.SimpleTodoAPISecure {
 	url, _ := url.Parse(AuthenticationData.RestEndpoint)
@@ -70,12 +63,6 @@ func (c *ToDoList) destroyItemOnBackend(t *models.Todo) {
 		log.Printf("Error deleting item on backend - error %v\n", err)
 		return
 	}
-}
-
-func BearerToken(token string) runtime.ClientAuthInfoWriter {
-	return runtime.ClientAuthInfoWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
-		return r.SetHeaderParam("Authorization", token)
-	})
 }
 
 func (c *ToDoList) getTodosFromBackend() ([]*models.Todo, error) {

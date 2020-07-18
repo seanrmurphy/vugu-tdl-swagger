@@ -28,8 +28,6 @@ func (c *CallbackPage) BeforeBuild() {
 	AuthenticationData.LoginData.ResponseParams = r
 	AuthenticationData.LoginData.LoggedIn = true
 
-	// go to main landing page...
-	//c.Navigate("/", nil)
 }
 
 func (c *CallbackPage) getTokens(v, code string) (r ResponseParams) {

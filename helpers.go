@@ -5,7 +5,16 @@ import (
 	"log"
 	"net/url"
 	"syscall/js"
+
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/strfmt"
 )
+
+func BearerToken(token string) runtime.ClientAuthInfoWriter {
+	return runtime.ClientAuthInfoWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
+		return r.SetHeaderParam("Authorization", token)
+	})
+}
 
 func readBrowserURL() (*url.URL, error) {
 
