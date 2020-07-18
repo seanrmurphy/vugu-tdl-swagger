@@ -21,10 +21,8 @@ type Todo struct {
 	Completed bool
 }
 
-var restEndpoint = "https://glm3dpf2yi.execute-api.eu-west-1.amazonaws.com/prod"
-
 func createClient() *client.SimpleTodo {
-	url, _ := url.Parse(restEndpoint)
+	url, _ := url.Parse(AuthenticationData.RestEndpoint)
 	conf := client.Config{
 		URL: url,
 	}
@@ -74,7 +72,7 @@ func (c *ToDoList) destroyItemOnBackend(t *models.Todo) {
 }
 
 func (c *ToDoList) getTodosFromBackend() []*models.Todo {
-	url, _ := url.Parse(restEndpoint)
+	url, _ := url.Parse(AuthenticationData.RestEndpoint)
 	conf := client.Config{
 		URL: url,
 	}

@@ -9,10 +9,10 @@
         <div>
                 <div class="navbar">
                         <div class="navbar-end">
-                                <a vg-if='!LoginData.LoggedIn' class="button is-primary" @click='c.Login()'>
+                                <a vg-if='!AuthenticationData.LoginData.LoggedIn' class="button is-primary" @click='c.Login()'>
                                         Log In
                                 </a>
-                                <a vg-if='LoginData.LoggedIn' class="button is-primary" @click='c.Logout()'>
+                                <a vg-if='AuthenticationData.LoginData.LoggedIn' class="button is-primary" @click='c.Logout()'>
                                         Log Out
                                 </a>
                         </div>
@@ -34,8 +34,6 @@ import (
 
 	"github.com/vugu/vgrouter"
 	"github.com/vugu/vugu"
-	pkce "github.com/nirasan/go-oauth-pkce-code-verifier"
-	// "net/url"
 )
 
 type Root struct {

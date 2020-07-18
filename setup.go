@@ -3,14 +3,42 @@
 package main
 
 import (
+	"log"
+	"syscall/js"
+
+	pkce "github.com/nirasan/go-oauth-pkce-code-verifier"
 	"github.com/vugu/vgrouter"
 	"github.com/vugu/vugu"
 )
 
-var LoginData LoginDataType
+var AuthenticationData AuthenticationDataType
+
+func setupAuthentication() {
+	AuthenticationData.ClientID = "7cvg3l59uc6u1kqdcejcdso6rh"
+	AuthenticationData.ClientName = "initialtest"
+	AuthenticationData.RestEndpoint = "https://glm3dpf2yi.execute-api.eu-west-1.amazonaws.com/prod"
+
+	cv := sessionStorageGet("codeVerifier")
+
+	if cv.Type() == js.TypeNull {
+		v, _ := pkce.CreateCodeVerifier()
+		AuthenticationData.LoginData.CodeVerifier = v
+
+		log.Printf("Creating new code verifier for login = %v", AuthenticationData.LoginData.CodeVerifier.String())
+
+		sessionStorageSet("codeVerifier", AuthenticationData.LoginData.CodeVerifier.String())
+
+	} else {
+		AuthenticationData.LoginData.CodeVerifier = &pkce.CodeVerifier{
+			Value: cv.String(),
+		}
+	}
+}
 
 // OVERALL APPLICATION WIRING IN vuguSetup
 func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
+
+	setupAuthentication()
 
 	// CREATE A NEW ROUTER INSTANCE
 	router := vgrouter.New(eventEnv)
@@ -32,18 +60,10 @@ func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
 		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
 			root.Body = &ToDoList{} // A COMPONENT WITH PAGE CONTENTS
 		}))
-	//router.MustAddRouteExact("/login",
-	//vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-	//root.Body = &LoginPage{} // A COMPONENT WITH PAGE CONTENTS
-	//}))
 	router.MustAddRoute("/callback",
 		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
 			root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
 		}))
-	//router.SetNotFound(vgrouter.RouteHandlerFunc(
-	//func(rm *vgrouter.RouteMatch) {
-	//root.Body = &Pagenotfound{} // A PAGE FOR THE NOT-FOUND CASE
-	//}))
 
 	// TELL THE ROUTER TO LISTEN FOR THE BROWSER CHANGING URLS
 	err := router.ListenForPopState()

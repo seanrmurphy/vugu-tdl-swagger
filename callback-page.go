@@ -25,8 +25,8 @@ func (c *CallbackPage) BeforeBuild() {
 	log.Printf("code verifier = %v", codeVerifier.String())
 
 	r := c.getTokens(codeVerifier.String(), url.Query().Get("code"))
-	LoginData.ResponseParams = r
-	LoginData.LoggedIn = true
+	AuthenticationData.LoginData.ResponseParams = r
+	AuthenticationData.LoginData.LoggedIn = true
 
 	// go to main landing page...
 	//c.Navigate("/", nil)
