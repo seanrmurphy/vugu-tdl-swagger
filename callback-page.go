@@ -34,19 +34,16 @@ func (c *CallbackPage) BeforeBuild() {
 
 func (c *CallbackPage) getTokens(v, code string) (r ResponseParams) {
 
-	clientName := "initialtest"
-	clientID := "7cvg3l59uc6u1kqdcejcdso6rh"
-
 	u := url.URL{
 		Scheme: "https",
-		Host:   clientName + ".auth.eu-west-1.amazoncognito.com",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
 		Path:   "oauth2/token",
-		Opaque: "//" + clientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
 	}
 
 	t := TokenParams{
 		GrantType:    "authorization_code",
-		ClientID:     clientID,
+		ClientID:     AuthenticationData.ClientID,
 		CodeVerifier: v,
 		Code:         code,
 		RedirectURI:  "http://localhost:8844/callback",

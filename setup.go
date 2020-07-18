@@ -14,9 +14,9 @@ import (
 var AuthenticationData AuthenticationDataType
 
 func setupAuthentication() {
-	AuthenticationData.ClientID = "7cvg3l59uc6u1kqdcejcdso6rh"
-	AuthenticationData.ClientName = "initialtest"
-	AuthenticationData.RestEndpoint = "https://glm3dpf2yi.execute-api.eu-west-1.amazonaws.com/prod"
+	AuthenticationData.ClientID = "5v39f6cso95bef26nblsf0kj0k"
+	AuthenticationData.ClientName = "todo-api-client"
+	AuthenticationData.RestEndpoint = "https://zgnjt9fhx9.execute-api.eu-west-1.amazonaws.com/prod"
 
 	cv := sessionStorageGet("codeVerifier")
 
