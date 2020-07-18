@@ -34,6 +34,7 @@ type AuthenticationDataType struct {
 	ClientName   string
 	LoginData    LoginDataType
 	RestEndpoint string
+	RedirectURI  string
 }
 
 type LoginDataType struct {

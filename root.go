@@ -1,7 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/url"
 	"syscall/js"
 
@@ -9,6 +13,17 @@ import (
 )
 
 func (c *Root) BeforeBuild() {
+
+	url, _ := readBrowserURL()
+	code := url.Query().Get("code")
+	if code != "" && AuthenticationData.LoginData.LoggedIn == false {
+		codeVerifier := sessionStorageGet("codeVerifier")
+		log.Printf("code verifier = %v", codeVerifier.String())
+
+		r := c.getTokens(codeVerifier.String(), url.Query().Get("code"))
+		AuthenticationData.LoginData.ResponseParams = r
+		AuthenticationData.LoginData.LoggedIn = true
+	}
 }
 
 func (c *Root) createCognitoURI(p CognitoParameters) (u url.URL) {
@@ -37,7 +52,7 @@ func (c *Root) Login() {
 	p := CognitoParameters{
 		ResponseType:        "code",
 		ClientID:            AuthenticationData.ClientID,
-		RedirectURI:         "http://localhost:8844/callback",
+		RedirectURI:         AuthenticationData.RedirectURI,
 		State:               "initial-state",
 		IdentityProvider:    "COGNITO",
 		IDPProvider:         "",
@@ -50,4 +65,38 @@ func (c *Root) Login() {
 
 	window := js.Global().Get("window")
 	window.Call("open", q.String(), "_self")
+}
+
+func (c *Root) getTokens(v, code string) (r ResponseParams) {
+
+	u := url.URL{
+		Scheme: "https",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
+		Path:   "oauth2/token",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
+	}
+
+	t := TokenParams{
+		GrantType:    "authorization_code",
+		ClientID:     AuthenticationData.ClientID,
+		CodeVerifier: v,
+		Code:         code,
+		RedirectURI:  AuthenticationData.RedirectURI,
+	}
+
+	val, _ := query.Values(t)
+	u.RawQuery = val.Encode()
+
+	req, _ := http.NewRequest("POST", u.String(), nil)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	r = ResponseParams{}
+	json.Unmarshal(body, &r)
+	fmt.Printf("Access Token: %v", r.AccessToken)
+	return
 }

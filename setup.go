@@ -14,9 +14,10 @@ import (
 var AuthenticationData AuthenticationDataType
 
 func setupAuthentication() {
-	AuthenticationData.ClientID = "5v39f6cso95bef26nblsf0kj0k"
+	AuthenticationData.ClientID = "2l9hulb583jpog38lhsog1gdrh"
 	AuthenticationData.ClientName = "todo-api-client"
-	AuthenticationData.RestEndpoint = "https://zgnjt9fhx9.execute-api.eu-west-1.amazonaws.com/prod"
+	AuthenticationData.RestEndpoint = "https://w7whcwnjya.execute-api.eu-west-1.amazonaws.com/prod"
+	AuthenticationData.RedirectURI = "http://localhost:8844"
 
 	cv := sessionStorageGet("codeVerifier")
 
@@ -59,10 +60,6 @@ func vuguSetup(buildEnv *vugu.BuildEnv, eventEnv vugu.EventEnv) vugu.Builder {
 	router.MustAddRouteExact("/",
 		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
 			root.Body = &ToDoList{} // A COMPONENT WITH PAGE CONTENTS
-		}))
-	router.MustAddRoute("/callback",
-		vgrouter.RouteHandlerFunc(func(rm *vgrouter.RouteMatch) {
-			root.Body = &CallbackPage{} // A COMPONENT WITH PAGE CONTENTS
 		}))
 
 	// TELL THE ROUTER TO LISTEN FOR THE BROWSER CHANGING URLS

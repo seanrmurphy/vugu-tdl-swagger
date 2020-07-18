@@ -17,11 +17,13 @@ import (
 
 func createClient() *client.SimpleTodoAPISecure {
 	url, _ := url.Parse(AuthenticationData.RestEndpoint)
+	authenticator := BearerToken(AuthenticationData.LoginData.ResponseParams.AccessToken)
+
 	conf := client.Config{
-		URL: url,
+		URL:      url,
+		AuthInfo: authenticator,
 	}
-	c := client.New(conf)
-	return c
+	return client.New(conf)
 }
 
 func (c *ToDoList) updateItem(t *models.Todo) {
@@ -67,15 +69,7 @@ func (c *ToDoList) destroyItemOnBackend(t *models.Todo) {
 
 func (c *ToDoList) getTodosFromBackend() ([]*models.Todo, error) {
 
-	url, _ := url.Parse(AuthenticationData.RestEndpoint)
-	log.Printf("Setting bearer token in request %v", AuthenticationData.LoginData.ResponseParams.AccessToken)
-	authenticator := BearerToken(AuthenticationData.LoginData.ResponseParams.AccessToken)
-
-	conf := client.Config{
-		URL:      url,
-		AuthInfo: authenticator,
-	}
-	backend := client.New(conf)
+	backend := createClient()
 
 	p := developers.NewGetAllTodosParams()
 	ctx := context.TODO()
