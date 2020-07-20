@@ -1,7 +1,8 @@
 
 <div class="to-do-list">
         <div class="container">
-                <div vg-if='AuthenticationData.LoginData.LoggedIn'>
+                <div class="columns">
+                <div class="column has-text-centered">
                         <h1>To Do List</h1>
 
                         <div class="to-do-list-new-todo">
@@ -16,18 +17,11 @@
                                 <i class="to-do-list-delete" class="fas fa-trash-alt" :id='"delete-"+value' @click='c.Delete(event)'></i>
                         </div>
                 </div>
-
-                <div vg-if='!AuthenticationData.LoginData.LoggedIn'>
-                        <p>Please Log In to access the todo list.</p>
                 </div>
-
         </div>
 </div>
 
 <style>
-.to-do-list {
-	text-align: center;
-}
 
 .to-do-list h1 {
 	font-size: 20px;

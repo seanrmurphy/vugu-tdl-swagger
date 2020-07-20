@@ -89,10 +89,11 @@ func (c *ToDoList) BeforeBuild() {
 		// this does not handle the case well in which the length of the todolist
 		// on the server is 0
 		if len(c.Todos) == 0 {
-			log.Printf("Initializing todos...")
+			log.Printf("Retrieving todos from backend...")
 			todos, err := c.getTodosFromBackend()
 
 			if err == nil {
+				log.Printf("Initializing todo data...")
 				c.Todos = make(map[string]models.Todo)
 				c.Index = []string{}
 				for _, v := range todos {
