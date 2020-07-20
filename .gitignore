@@ -1,4 +1,4 @@
-bin
-**_vgen.go
+frontend/bin
+frontend/**_vgen.go
 .vscode
 

@@ -1,10 +1,10 @@
-module github.com/vugu-examples/simple
+module github.com/seanrmurphy/vugu-tdl-swagger/frontend
 
 go 1.14
 
-replace github.com/vugu/vgrouter => ../../vugu/vgrouter
+replace github.com/vugu/vgrouter => ../../../vugu/vgrouter
 
-replace github.com/seanrmurphy/go-vecty-swagger => ../../seanrmurphy/go-vecty-swagger
+replace github.com/seanrmurphy/go-vecty-swagger => ../../../seanrmurphy/go-vecty-swagger
 
 require (
 	github.com/fatih/structs v1.1.0
