@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: A simple todo API for demonstrating fullstack go development
   version: 1.0.0
-  title: Simple Todo API
+  title: Simple Todo API (Secure)
   # put the contact info for your development or API team
   contact:
     email: sean@gopaddy.ch
@@ -29,7 +29,7 @@ securityDefinitions:
     x-amazon-apigateway-authorizer:
       type: cognito_user_pools
       providerARNs:
-      - arn:aws:cognito-idp:{region}:{account_id}:userpool/{user_pool_id}
+      - arn:aws:cognito-idp:{REGION}:{ACCOUNT_ID}:userpool/{USER_POOL_ID}
 
 paths:
   /todo:
@@ -43,11 +43,10 @@ paths:
         - application/json
       tags:
         - CORS
-      security:
+      #security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      #- cognitouserpool: [profile]
       x-amazon-apigateway-integration:
         type: mock
         requestTemplates:
@@ -88,8 +87,7 @@ paths:
       security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      - cognitouserpool: [profile]
       responses:
         200:
           description: list of todos
@@ -112,8 +110,7 @@ paths:
       security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      - cognitouserpool: [profile]
       parameters:
       - in: body
         name: Todo
@@ -128,7 +125,11 @@ paths:
         409:
           description: an existing item already exists
 
-  /todo/{id}:
+  /todo/{todoid}:
+     #parameters:
+     #- name: todoid
+       #in: path
+       #type: string
 
     options:
       summary: CORS support
@@ -138,13 +139,18 @@ paths:
         - application/json
       produces:
         - application/json
-      security:
+      #security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      #- cognitouserpool: [profile]
       tags:
         - CORS
+      parameters:
+      - in: path
+        name: todoid
+        description: Id of todo to get
+        type: string
+        required: true
       x-amazon-apigateway-integration:
         type: mock
         requestTemplates:
@@ -185,14 +191,12 @@ paths:
       security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      - cognitouserpool: [profile]
       parameters:
       - in: path
-        name: Id
+        name: todoid
         description: Id of todo to get
-        schema:
-          type: string
+        type: string
         required: true
       responses:
         200:
@@ -214,14 +218,12 @@ paths:
       security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      - cognitouserpool: [profile]
       parameters:
       - in: path
-        name: Id
+        name: todoid
         description: Id of todo to get
-        schema:
-          type: string
+        type: string
         required: true
       - in: body
         name: Todo
@@ -246,14 +248,12 @@ paths:
       security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-        cognitouserpool:
-        - "profile"
+      - cognitouserpool: [profile]
       parameters:
       - in: path
-        name: Id
+        name: todoid
         description: Id of todo to get
-        schema:
-          type: string
+        type: string
         required: true
       responses:
         200:
@@ -265,7 +265,7 @@ definitions:
   Todo:
     type: object
     required:
-    - name
+    - title
     properties:
       id:
         type: string

@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-PROFILE=default
+PROFILE=test-superuser
 ROLENAME=go-fullstack-test-role
 
 # note that with dynamodb you only specify essential attributes at db creation time...

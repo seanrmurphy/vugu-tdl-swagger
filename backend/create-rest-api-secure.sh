@@ -47,7 +47,7 @@ check_env_vars
 PROFILE="$GOFULLSTACKPROFILE"
 ROLE="$GOFULLSTACKROLE"
 
-REGION=eu-west-1
+REGION=eu-west-2
 
 create_rest_api
 get_resource_id "/todo"

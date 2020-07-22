@@ -55,7 +55,7 @@
 </style>
 
 <script type="application/x-go">
-import "github.com/seanrmurphy/go-vecty-swagger/models"
+import "github.com/seanrmurphy/vugu-tdl-swagger/swagger/models"
 
 type ToDoList struct {
 	Todos map[string]models.Todo

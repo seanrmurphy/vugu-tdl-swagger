@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/vugu/vugu"
 
-	"github.com/seanrmurphy/go-vecty-swagger/client"
-	"github.com/seanrmurphy/go-vecty-swagger/client/developers"
-	"github.com/seanrmurphy/go-vecty-swagger/models"
+	"github.com/seanrmurphy/vugu-tdl-swagger/swagger/client"
+	"github.com/seanrmurphy/vugu-tdl-swagger/swagger/client/developers"
+	"github.com/seanrmurphy/vugu-tdl-swagger/swagger/models"
 )
 
 func createClient() *client.SimpleTodoAPISecure {
@@ -156,6 +156,9 @@ func (c *ToDoList) Delete(e vugu.DOMEvent) {
 }
 
 func (c *ToDoList) AddTodo(t models.Todo) {
+	if c.Todos == nil {
+		c.Todos = make(map[string]models.Todo)
+	}
 	c.Todos[t.ID.String()] = t
 	c.Index = append(c.Index, t.ID.String())
 	go c.postItemToBackend(t)

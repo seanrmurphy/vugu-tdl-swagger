@@ -29,7 +29,7 @@ securityDefinitions:
     x-amazon-apigateway-authorizer:
       type: cognito_user_pools
       providerARNs:
-      - arn:aws:cognito-idp:{REGION}:{ACCOUNTNO}:userpool/{USERPOOLID}
+      - arn:aws:cognito-idp:{REGION}:{ACCOUNT_ID}:userpool/{USER_POOL_ID}
 
 paths:
   /todo:
@@ -43,10 +43,10 @@ paths:
         - application/json
       tags:
         - CORS
-      security:
+      #security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-      - cognitouserpool: [profile]
+      #- cognitouserpool: [profile]
       x-amazon-apigateway-integration:
         type: mock
         requestTemplates:
@@ -139,10 +139,10 @@ paths:
         - application/json
       produces:
         - application/json
-      security:
+      #security:
         # need to add the scope here - this should probably be something defined
         # a priori and made more sensible for the purposes of illustration
-      - cognitouserpool: [profile]
+      #- cognitouserpool: [profile]
       tags:
         - CORS
       parameters:

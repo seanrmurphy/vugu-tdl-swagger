@@ -17,30 +17,20 @@ import (
 
 // API is the interface of the developers client
 type API interface {
-	/*
-	   AddTodo adds an item to the todo list
-	   Adds an item to the system
-	*/
+	// AddTodo adds an item to the todo list
+	// Adds an item to the system
 	AddTodo(ctx context.Context, params *AddTodoParams) (*AddTodoCreated, error)
-	/*
-	   DeleteTodo deletes a specific todo
-	   delete a given todo
-	*/
+	// DeleteTodo deletes a specific todo
+	// delete a given todo
 	DeleteTodo(ctx context.Context, params *DeleteTodoParams) (*DeleteTodoOK, error)
-	/*
-	   GetAllTodos gets todos
-	   Gets a list of todos - currently this is universal for all users...
-	*/
+	// GetAllTodos gets todos
+	// Gets a list of todos - currently this is universal for all users...
 	GetAllTodos(ctx context.Context, params *GetAllTodosParams) (*GetAllTodosOK, error)
-	/*
-	   GetTodo gets given todo
-	   Gets a specific todo
-	*/
+	// GetTodo gets given todo
+	// Gets a specific todo
 	GetTodo(ctx context.Context, params *GetTodoParams) (*GetTodoOK, error)
-	/*
-	   UpdateTodo updates an item in the todo list
-	   updates a given todo
-	*/
+	// UpdateTodo updates an item in the todo list
+	// updates a given todo
 	UpdateTodo(ctx context.Context, params *UpdateTodoParams) (*UpdateTodoOK, error)
 }
 

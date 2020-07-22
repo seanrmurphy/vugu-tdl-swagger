@@ -55,3 +55,7 @@ echo
 echo 'Cognito configuration created'
 echo 'Note that it can take 15 minutes before the domain is active and usable'
 echo
+echo 'ARN for Cognito user pool is'
+echo "    $POOLARN"
+echo
+

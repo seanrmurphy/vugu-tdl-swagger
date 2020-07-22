@@ -17,15 +17,11 @@ import (
 
 // API is the interface of the c o r s client
 type API interface {
-	/*
-	   OptionsTodo cs o r s support
-	   Enable CORS by returning correct headers
-	*/
+	// OptionsTodo cs o r s support
+	// Enable CORS by returning correct headers
 	OptionsTodo(ctx context.Context, params *OptionsTodoParams) (*OptionsTodoOK, error)
-	/*
-	   OptionsTodoTodoid cs o r s support
-	   Enable CORS by returning correct headers
-	*/
+	// OptionsTodoTodoid cs o r s support
+	// Enable CORS by returning correct headers
 	OptionsTodoTodoid(ctx context.Context, params *OptionsTodoTodoidParams) (*OptionsTodoTodoidOK, error)
 }
 
@@ -63,7 +59,6 @@ func (a *Client) OptionsTodo(ctx context.Context, params *OptionsTodoParams) (*O
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &OptionsTodoReader{formats: a.formats},
-		AuthInfo:           a.authInfo,
 		Context:            ctx,
 		Client:             params.HTTPClient,
 	})
@@ -90,7 +85,6 @@ func (a *Client) OptionsTodoTodoid(ctx context.Context, params *OptionsTodoTodoi
 		Schemes:            []string{"https"},
 		Params:             params,
 		Reader:             &OptionsTodoTodoidReader{formats: a.formats},
-		AuthInfo:           a.authInfo,
 		Context:            ctx,
 		Client:             params.HTTPClient,
 	})

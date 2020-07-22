@@ -30,9 +30,9 @@ func (c *Root) createCognitoURI(p CognitoParameters) (u url.URL) {
 
 	u = url.URL{
 		Scheme: "https",
-		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-2.amazoncognito.com",
 		Path:   "oauth2/authorize",
-		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/authorize",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-2.amazoncognito.com/oauth2/authorize",
 	}
 	v, _ := query.Values(p)
 	u.RawQuery = v.Encode()
@@ -71,9 +71,9 @@ func (c *Root) getTokens(v, code string) (r ResponseParams) {
 
 	u := url.URL{
 		Scheme: "https",
-		Host:   AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com",
+		Host:   AuthenticationData.ClientName + ".auth.eu-west-2.amazoncognito.com",
 		Path:   "oauth2/token",
-		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-1.amazoncognito.com/oauth2/token",
+		Opaque: "//" + AuthenticationData.ClientName + ".auth.eu-west-2.amazoncognito.com/oauth2/token",
 	}
 
 	t := TokenParams{
