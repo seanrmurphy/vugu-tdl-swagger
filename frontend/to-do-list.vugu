@@ -1,0 +1,65 @@
+
+<div class="to-do-list">
+        <div class="container">
+                <div class="columns">
+                <div class="column has-text-centered">
+                        <h1>To Do List</h1>
+
+                        <div class="to-do-list-new-todo">
+                                <label>New Todo:</label>
+                                <input type="text" id="new-todo" @keypress='c.Keypress(event)'>
+                        </div>
+
+                        <div class="to-do-list-single-todo" vg-for='c.Index'>
+                                <label vg-if='!c.Todos[value].Completed' vg-content='c.Todos[value].Title'></label>
+                                <label vg-if='c.Todos[value].Completed' vg-content='c.Todos[value].Title' class="to-do-list-item-done"></label>
+                                <i class="to-do-list-check-box" class="far fa-check-square" :id='"done-"+value' @click='c.Done(event)'></i>
+                                <i class="to-do-list-delete" class="fas fa-trash-alt" :id='"delete-"+value' @click='c.Delete(event)'></i>
+                        </div>
+                </div>
+                </div>
+        </div>
+</div>
+
+<style>
+
+.to-do-list h1 {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.to-do-list .to-do-list-new-todo {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.to-do-list .to-do-list-single-todo {
+	color: black;
+}
+
+.to-do-list .to-do-list-single-todo .to-do-list-item-done {
+	color: gray;
+	text-decoration: line-through;
+}
+
+.to-do-list .to-do-list-single-todo .to-do-list-check-box {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.to-do-list .to-do-list-single-todo .to-do-list-delete {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+</style>
+
+<script type="application/x-go">
+import "github.com/seanrmurphy/vugu-tdl-swagger/swagger/models"
+
+type ToDoList struct {
+	Todos map[string]models.Todo
+	Index []string
+}
+
+</script>

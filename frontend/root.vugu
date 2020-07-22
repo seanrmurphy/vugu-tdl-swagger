@@ -1,0 +1,58 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+</head>
+
+<body>
+        <div>
+                <div class="navbar has-text-white has-background-primary">
+                        <div class="navbar-brand">
+                               <h1>Vugu/Swagger/Serverless demo</h1>
+                        </div>
+                        <div class="navbar-end">
+                                <a vg-if='AuthenticationData.LoginData.LoggedIn' class="button is-primary is-inverted" @click='c.Logout()'>
+                                        Log Out
+                                </a>
+                        </div>
+                </div>
+
+                <div vg-if='AuthenticationData.LoginData.LoggedIn'>
+                        <vg-comp expr="c.Body"/>
+                </div>
+
+                <div vg-if='!AuthenticationData.LoginData.LoggedIn'>
+                        <div class="container">
+                                <div class="columns">
+                                        <div class="column has-text-centered">
+                                                <p>Please Log In to access the todo list.</p>
+                                                <a class="button is-primary" @click='c.Login()'>Log In</a>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+</body>
+
+</html>
+
+<script type="application/x-go">
+
+import (
+
+	"github.com/vugu/vgrouter"
+	"github.com/vugu/vugu"
+)
+
+type Root struct {
+	// ANYTHING THAT MUST NAVIGATE NEED ONLY EMBED THIS
+	vgrouter.NavigatorRef
+
+	// THE BODY COMPONENT, GETS SET BY THE APPROPRIATE ROUTE ABOVE
+	Body vugu.Builder
+}
+
+
+</script>

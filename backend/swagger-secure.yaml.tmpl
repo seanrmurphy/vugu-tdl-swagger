@@ -1,0 +1,285 @@
+swagger: '2.0'
+info:
+  description: A simple todo API for demonstrating fullstack go development
+  version: 1.0.0
+  title: Simple Todo API (Secure)
+  # put the contact info for your development or API team
+  contact:
+    email: sean@gopaddy.ch
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+
+
+# in the following, the region, account_id and user_pool_id need to be specified
+securityDefinitions:
+  cognitouserpool:
+    type: apiKey
+    name: Authorization
+    in: header
+    x-amazon-apigateway-authtype: cognito_user_pools
+    x-amazon-apigateway-authorizer:
+      type: cognito_user_pools
+      providerARNs:
+      - arn:aws:cognito-idp:{REGION}:{ACCOUNT_ID}:userpool/{USER_POOL_ID}
+
+paths:
+  /todo:
+    options:
+      summary: CORS support
+      description:
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      #security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      #- cognitouserpool: [profile]
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode": 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+
+    get:
+      tags:
+      - developers
+      summary: gets todos
+      operationId: getAllTodos
+      description:
+        Gets a list of todos - currently this is universal for all users...
+      produces:
+      - application/json
+      security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      - cognitouserpool: [profile]
+      responses:
+        200:
+          description: list of todos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Todo'
+        400:
+          description: bad input parameter
+    post:
+      tags:
+      - developers
+      summary: adds an item to the todo list..
+      operationId: addTodo
+      description: Adds an item to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      - cognitouserpool: [profile]
+      parameters:
+      - in: body
+        name: Todo
+        description: todo item to add
+        schema:
+          $ref: '#/definitions/Todo'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+
+  /todo/{todoid}:
+     #parameters:
+     #- name: todoid
+       #in: path
+       #type: string
+
+    options:
+      summary: CORS support
+      description:
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      #security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      #- cognitouserpool: [profile]
+      tags:
+        - CORS
+      parameters:
+      - in: path
+        name: todoid
+        description: Id of todo to get
+        type: string
+        required: true
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode": 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+
+    get:
+      tags:
+      - developers
+      summary: gets given todo
+      operationId: getTodo
+      description:
+        Gets a specific todo
+      produces:
+      - application/json
+      security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      - cognitouserpool: [profile]
+      parameters:
+      - in: path
+        name: todoid
+        description: Id of todo to get
+        type: string
+        required: true
+      responses:
+        200:
+          description: get given todo
+          schema:
+            $ref: '#/definitions/Todo'
+        404:
+          description: item not found
+    put:
+      tags:
+      - developers
+      summary: updates an item in the todo list..
+      operationId: updateTodo
+      description: updates a given todo
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      - cognitouserpool: [profile]
+      parameters:
+      - in: path
+        name: todoid
+        description: Id of todo to get
+        type: string
+        required: true
+      - in: body
+        name: Todo
+        description: updated todo
+        schema:
+          $ref: '#/definitions/Todo'
+      responses:
+        200:
+          description: item updated
+        404:
+          description: item not found
+    delete:
+      tags:
+      - developers
+      summary: deletes a specific todo
+      operationId: deleteTodo
+      description: delete a given todo
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+        # need to add the scope here - this should probably be something defined
+        # a priori and made more sensible for the purposes of illustration
+      - cognitouserpool: [profile]
+      parameters:
+      - in: path
+        name: todoid
+        description: Id of todo to get
+        type: string
+        required: true
+      responses:
+        200:
+          description: item deleted
+        404:
+          description: item not found
+
+definitions:
+  Todo:
+    type: object
+    required:
+    - title
+    properties:
+      id:
+        type: string
+        format: uuid
+      title:
+        type: string
+      creationDate:
+        type: string
+        format: date-time
+      completed:
+        type: boolean
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /seanrm/todo-api/1.0.0
+schemes:
+ - https

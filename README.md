@@ -1,13 +1,16 @@
-# simple
-Simple Vugu Example
+# vugu-tdl-swagger
 
-You can get started with:
+This repo contains a fullstack Go application comprising of
+- a vugu based frontend
+- an AWS Lambda based backend
+- a swagger interface which supports FE-BE communication and hooks into AWS cognito
 
-```sh
-go get -u github.com/vugu/vgrun
-vgrun -new-from-example=simple myexample
-cd myexample
-vgrun devserver.go
-```
+The main point of this repo is to demonstrate implementation of a secure backend
+and how it can integrate with a vugu/Go frontend.
 
-Then browse to the running server: http://localhost:8844/
+More details on this work is provided in this Medium post:
+
+To build the application, follow the instructions in each of the directories;
+- deploy the backend first (see the backend directory),
+- create the swagger client library (in the swagger directory)
+- create the frontend (see the frontend directory).

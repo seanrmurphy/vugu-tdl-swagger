@@ -1,4 +1,6 @@
-bin
-**_vgen.go
+frontend/bin
+frontend/**_vgen.go
 .vscode
 
+swagger/swagger-secure.yaml
+backend/swagger-secure.yaml
